@@ -1,0 +1,22 @@
+.chart-container {
+  position: relative;
+  margin: auto;
+  height: 60%;
+  width: 40%;
+}
+
+canvas{
+  position: relative;
+  left: 15%;
+}
+
+.sidenav{
+  font-size: 50px !important;
+  color: white ;
+  background-color: #E8E8E8 !important;
+  width: 290px !important;
+  margin-top: 0px !important;
+}
+
+
+
