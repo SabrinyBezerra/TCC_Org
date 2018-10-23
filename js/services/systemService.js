@@ -4,8 +4,8 @@ app.factory("systemService", function($http){
           return $http.get('http://127.0.0.1:5000/api/UF');
     };
      
-    var _getBR = function() {
-        return $http.get('http://127.0.0.1:5000/api/BR');
+    var _getBrEstado = function(estado) {
+        return $http.get('http://127.0.0.1:5000/api/BR/' + estado);
     };
    
   
@@ -25,11 +25,16 @@ app.factory("systemService", function($http){
         return $http.get('http://127.0.0.1:5000/api/TipoAcidente');
     };
 
+    var _getSexoEstado = function(estado) {
+        return $http.get('http://127.0.0.1:5000/api/SexoEst/' + estado);
+    };
+    
 return {
   getdia: _getdia,
   getUf: _getUf,
-  getBR: _getBR,
+  getBrEstado: _getBrEstado,
   getSexo: _getSexo,
   getCausa: _getCausa,
-  getTipo: _getTipo
+  getTipo: _getTipo,
+  getSexoEstado: _getSexoEstado
 }});
