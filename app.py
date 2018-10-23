@@ -7,6 +7,7 @@ from resources.DiaSemana_Resource import DiaSemana
 from resources.Sexo_Resource import Sexo
 from resources.CausaAcidente_Resource import CausaAcidente
 from resources.TipoAcidente_Resource import TipoAcidente
+from resources.SexoEst_Resource import SexoEst
 
 #Criar o servidor
 app = Flask(__name__)
@@ -18,11 +19,12 @@ api = Api(api_bp, prefix='/api')
 
 #Resources
 api.add_resource(UF_Acidente, '/UF')
-api.add_resource(BR_Acidente, '/BR')
+api.add_resource(BR_Acidente, '/BR/<string:estado>')
 api.add_resource(DiaSemana, '/dia')
 api.add_resource(Sexo, '/Sexo')
 api.add_resource(CausaAcidente, '/CausaAcidente')
 api.add_resource(TipoAcidente, '/TipoAcidente')
+api.add_resource(SexoEst, '/SexoEst/<string:estado>')
 
 app.register_blueprint(api_bp)
 
