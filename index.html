@@ -14,8 +14,7 @@
       <!-- Modal Structure -->
     <div id="modal1" class="modal modal-fixed-footer">
       <div class="modal-content">
-        <a class="waves-effect waves-light btn" ng-click="gerarSexoEstado()">Sexo</a>
-        <a class="waves-effect waves-light btn" ng-click="gerarBrEstado()">BR</a>
+      
         <!--  Preloader -->
         <br/>
         <div ng-if="requisicaoEst" class="preloader-wrapper big active center-preloader-est">
@@ -31,16 +30,19 @@
         </div>
         <!---->
         <div id="mapEst">
-            <canvas id="myChartEstado" ></canvas>
+            <canvas id="myChartEstado1" ></canvas>
+            <canvas id="myChartEstado2" ></canvas>
+            <canvas id="myChartEstado3" ></canvas>
+            <canvas id="myChartEstado4" ></canvas>
         </div>
       </div>
       <div class="modal-footer">
-        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Fechar</a>
+        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Voltar a página</a>
       </div>
     </div>
 
         <!-- vizualização das páginas -->
-        <ul id="slide-out" class="sidenav sidenav-fixed">
+        <ul id="slide-out" class="sidenav sidenav-fixed menu">
                 <li><a style="text-align: center" id="nome-projeto">Análise dos Dados Abertos</a></li>
                 <li><a style="text-align: center">do Governo Federal</a></li>
                 <li><div class="divider"></div></li>

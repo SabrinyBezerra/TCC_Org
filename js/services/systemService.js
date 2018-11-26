@@ -28,6 +28,14 @@ app.factory("systemService", function($http){
     var _getSexoEstado = function(estado) {
         return $http.get('http://127.0.0.1:5000/api/SexoEst/' + estado);
     };
+
+    var _getTop = function(estado) {
+        return $http.get('http://127.0.0.1:5000/api/Top/'+ estado);
+  };
+   
+  var _getfisico = function(estado) {
+    return $http.get('http://127.0.0.1:5000/api/fisico/'+ estado);
+};
     
 return {
   getdia: _getdia,
@@ -36,5 +44,7 @@ return {
   getSexo: _getSexo,
   getCausa: _getCausa,
   getTipo: _getTipo,
-  getSexoEstado: _getSexoEstado
+  getSexoEstado: _getSexoEstado,
+  getTop: _getTop,
+  getfisico: _getfisico
 }});

@@ -47,9 +47,17 @@ canvas{
 }
 
 .modal{
-  min-width: 75% !important;
+  min-width: 100% !important;
+  min-height: 90% !important;
 }
 
+.menu{
+  background-color:rgb(9, 17, 29) !important;
+}
+
+.menu a{
+  color: white !important;
+}
 .center-preloader{
   display: block;
   position: relative;

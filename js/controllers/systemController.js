@@ -1,7 +1,13 @@
 app.controller('systemCtrl', function($scope, systemService){
     
     let ctx = document.getElementById("myChart").getContext('2d');
-    let ctxEst = document.getElementById("myChartEstado").getContext('2d');
+    let ctxEst = [
+        document.getElementById("myChartEstado1").getContext('2d'),
+        document.getElementById("myChartEstado2").getContext('2d'),
+        document.getElementById("myChartEstado3").getContext('2d'),
+        document.getElementById("myChartEstado4").getContext('2d')
+    
+    ]
     let myChart = undefined // Utilizado para limpar os gráficos
     let myChartEstados = undefined;
     let estadoSelect = [];
@@ -160,12 +166,12 @@ criaGrafico = function(acidente,tipoGrafico, options){
    $scope.gerarMapaBrasil = function(){
     limparGrafico()
     anychart.onDocumentReady(function() {
-        // create map
+        // criar mapa
         map = anychart.map();
 
         systemService.getUf().    
             then(function successCalback(response){
-                // create data set
+                // criar conjunto de dados
                 dataSet = anychart.data.set([
                     {'id': 'BR.RS', 'value': 'Número de acidentes: ' + response.data[0][1], 'nome': 'Rio Grande do Sul'},
                     {'id': 'BR.PA', 'value': 'Número de acidentes: ' + response.data[1][1], 'nome': 'Pará'},
@@ -196,31 +202,28 @@ criaGrafico = function(acidente,tipoGrafico, options){
                     {'id': 'BR.MA', 'value': 'Número de acidentes: ' +  response.data[26][1], 'nome': 'Maranhão'},
                 ]); 
                 
-                        // create choropleth series
+                // criar series
                 series = map.choropleth(dataSet);
             
-                // set geoIdField to 'id', this field contains in geo data meta properties
+                // contém propriedades dos dados geográficos
                 series.geoIdField('id');
             
-                // set map color settings
+                // configurações das cores do mapa
                 series.colorScale(anychart.scales.linearColor('#deebf7', '#3182bd'));
                 series.hovered().fill('#addd8e');
                 
                 map.listen('pointClick', function(event) {
                     estadoSelect[0] = event.point.get('id')
                     estadoSelect[1] = event.point.get('nome')
-                    limparGraficoEstados()
+                    //limparGraficoEstados()
+                    gerarGraficosModal();
                     $('#modal1').modal('open');
                 })
 
-                // set geo data, you can find this map in our geo maps collection
+                // conjunto de dados geográficos
                 // https://cdn.anychart.com/#maps-collection
                 map.geoData(anychart.maps['brazil']);
-            
-                //set map container id (div)
                 map.container('containerBR');
-                
-                //initiate map drawing
                 map.draw();
 
             },
@@ -231,10 +234,15 @@ criaGrafico = function(acidente,tipoGrafico, options){
     
    }
 
+   gerarGraficosModal = function(){
+        $scope.gerarSexoEstado();
+        $scope.gerarBrEstado();
+        $scope.gerarTop();
+        $scope.gerarfisico();
+   }
 
    // ESTADOS BRASIL GRÁFICOS MODAL
-
-   limparGraficoEstados = function(){
+   limparGraficoEstados = function(num){
         if(myChartEstados != undefined){
             myChartEstados.destroy();
         }
@@ -242,10 +250,10 @@ criaGrafico = function(acidente,tipoGrafico, options){
 
     limparMapBrasil = function(){
         document.getElementById('containerBR').innerHTML = ''
-    }
-    
+    }   
 
-   criaGraficoEstados = function(acidente,tipoGrafico, options){
+   criaGraficoEstados = function(acidente,tipoGrafico, options, num){
+       console.log(acidente, num)
     let numArray = 0;
     let acidentesData = []
     let acidentesLabel = []
@@ -255,8 +263,9 @@ criaGrafico = function(acidente,tipoGrafico, options){
         acidentesData.push(acidente[ac][1])
         numArray++;
     }
+        delete myChartEstados;
 
-        myChartEstados = new Chart(ctxEst, {
+        myChartEstados = new Chart(ctxEst[num], {
             type: tipoGrafico,
             data: {
               labels: acidentesLabel,
@@ -269,9 +278,9 @@ criaGrafico = function(acidente,tipoGrafico, options){
           });
         
    };
-
+    //Criando grafico de acidentes por sexo em determinado Estado
    $scope.gerarSexoEstado = function(){ 
-    limparGraficoEstados()
+    //limparGraficoEstados()
     $scope.requisicaoEst = true;
     systemService.getSexoEstado(estadoSelect[0]).
     then(function successCalback(response){
@@ -291,15 +300,15 @@ criaGrafico = function(acidente,tipoGrafico, options){
                responsive: true
            }
             
-            criaGraficoEstados(response.data,"pie",option)
+            criaGraficoEstados(response.data,"pie",option, 0)
     },
     function errorCallback(response){
         console.error('Erro ' + response);
     });
 }
-
+//Criando grafico de acidentes por BR em determinado Estado
 $scope.gerarBrEstado = function(){ 
-    limparGraficoEstados()
+    //limparGraficoEstados()
     $scope.requisicaoEst = true;
     systemService.getBrEstado(estadoSelect[0]).
     then(function successCalback(response){
@@ -318,14 +327,68 @@ $scope.gerarBrEstado = function(){
                },
                responsive: true
            }
-            
-            criaGraficoEstados(response.data,"pie",option)
+            criaGraficoEstados(response.data,"pie",option, 1)
     },
     function errorCallback(response){
         console.error('Erro ' + response);
     });
 }
+//Criando grafico de acidentes Top 5 de cada Estado
+$scope.gerarTop = function(){ 
+    //limparGraficoEstados()
+    $scope.requisicaoEst = true;
+    systemService.getTop(estadoSelect[0]).
+    then(function successCalback(response){
+        $scope.requisicaoEst = false;
 
+            let option = {
+                title: {
+                   display: true,
+                   fontSize: 28,
+                   text: 'Número de acidentes por Município no estado: ' + estadoSelect[1]
+               },
+               legend: {
+                   display: true,
+                   position: 'bottom',
+       
+               },
+               responsive: true
+           }
+            
+            criaGraficoEstados(response.data,"pie",option, 2)
+    },
+    function errorCallback(response){
+        console.error('Erro ' + response);
+    });
+}
+//Criando grafico de acidentes por Estado Fisico em determinado Estado
+$scope.gerarfisico = function(){ 
+    //limparGraficoEstados()
+    $scope.requisicaoEst = true;
+    systemService.getfisico(estadoSelect[0]).
+    then(function successCalback(response){
+        $scope.requisicaoEst = false;
+
+            let option = {
+                title: {
+                   display: true,
+                   fontSize: 28,
+                   text: 'Estado físico dos individuos acidentados no estado: ' + estadoSelect[1]
+               },
+               legend: {
+                   display: true,
+                   position: 'bottom',
+       
+               },
+               responsive: true
+           }
+            
+            criaGraficoEstados(response.data,"pie",option, 3)
+    },
+    function errorCallback(response){
+        console.error('Erro ' + response);
+    });
+}
 
 
 })
