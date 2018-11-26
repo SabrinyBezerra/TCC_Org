@@ -8,6 +8,8 @@ from resources.Sexo_Resource import Sexo
 from resources.CausaAcidente_Resource import CausaAcidente
 from resources.TipoAcidente_Resource import TipoAcidente
 from resources.SexoEst_Resource import SexoEst
+from resources.Top_Resource import Top_Acidente
+from resources.Estado_fisico_Resource import Estado_fisico_Resource
 
 #Criar o servidor
 app = Flask(__name__)
@@ -25,6 +27,8 @@ api.add_resource(Sexo, '/Sexo')
 api.add_resource(CausaAcidente, '/CausaAcidente')
 api.add_resource(TipoAcidente, '/TipoAcidente')
 api.add_resource(SexoEst, '/SexoEst/<string:estado>')
+api.add_resource(Top_Acidente, '/Top/<string:estado>')
+api.add_resource(Estado_fisico_Resource, '/fisico/<string:estado>')
 
 app.register_blueprint(api_bp)
 
