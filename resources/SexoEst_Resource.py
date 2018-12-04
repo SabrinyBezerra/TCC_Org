@@ -1,4 +1,4 @@
-#Fazendo consultas sobre o sexo dos individuos envolvidos nos acidedentes
+#Fazendo consultas sobre o sexo dos individuos envolvidos nos acidedentes de cada estado
 from flask_restful import Resource, marshal_with, abort
 from database.PgConector import *
 
