@@ -19,6 +19,8 @@ app.config['DEBUG'] = True
 api_bp = Blueprint('api', __name__)
 api = Api(api_bp, prefix='/api')
 
+
+#links para concexao com a pagina WEB
 #Resources
 api.add_resource(UF_Acidente, '/UF')
 api.add_resource(BR_Acidente, '/BR/<string:estado>')
