@@ -1,3 +1,4 @@
+/*Gera os graficos na pagina WEB*/
 app.controller('systemCtrl', function($scope, systemService){
     
     let ctx = document.getElementById("myChart").getContext('2d');
@@ -13,8 +14,9 @@ app.controller('systemCtrl', function($scope, systemService){
     let estadoSelect = [];
     let dataSet = undefined;
     $scope.viewMapaBrasil = false;
+    myChartEstadosVet = []
 
-    limparGrafico = function(){
+    limparGrafico = function(){ // Funcao para limpar a tela
         if(myChart != undefined){
             myChart.destroy();
         }
@@ -34,13 +36,13 @@ app.controller('systemCtrl', function($scope, systemService){
                 title: {
                    display: true,
                    fontSize: 28,
-                   text: 'Número de acidentes por UF'
+                   text: 'Número de acidentes por UF' //Titulo do grafico
                },
                tooltips: {
                 callbacks: {
                     label: function(tooltipItem, data) {
                         console.log(data)
-                        return "O número de acidentes em "+ data.labels[tooltipItem.index] + " foi " + data.datasets[0].data[tooltipItem.index];
+                        return "O número de acidentes em "+ data.labels[tooltipItem.index] + " foi " + data.datasets[0].data[tooltipItem.index]; //legenda do grafico
                         
                     }
                 }
@@ -52,7 +54,7 @@ app.controller('systemCtrl', function($scope, systemService){
                responsive: true
            }
 
-            criaGrafico(response.data,'pie',option)
+            criaGrafico(response.data,'pie',option) //tipo de grafico, neste caso foi criado o grafico de pizza
         },
         function errorCallback(response){
             console.error('Erro ' + response);
@@ -73,7 +75,7 @@ app.controller('systemCtrl', function($scope, systemService){
                 title: {
                    display: true,
                    fontSize: 28,
-                   text: 'Número de acidentes por Sexo'
+                   text: 'Número de acidentes por Sexo' //titulo do grafico
                },
                legend: {
                    display: true,
@@ -83,7 +85,7 @@ app.controller('systemCtrl', function($scope, systemService){
                responsive: true
            }
             
-            criaGrafico(response.data,"doughnut",option)
+            criaGrafico(response.data,"doughnut",option) //tipo de grafico, neste caso foi criado o grafico de rosca
     },
     function errorCallback(response){
         console.error('Erro ' + response);
@@ -103,7 +105,7 @@ app.controller('systemCtrl', function($scope, systemService){
                 title: {
                    display: true,
                    fontSize: 28,
-                   text: 'Número de acidentes por Dia'
+                   text: 'Número de acidentes por Dia' //titulo da pagina 
                },
                legend: {
                    display: false,
@@ -113,13 +115,14 @@ app.controller('systemCtrl', function($scope, systemService){
                responsive: true
            }
 
-            criaGrafico(response.data,"bar",option)
+            criaGrafico(response.data,"bar",option) //tipo de grafico, neste caso foi criado o grafico de barra
     },
     function errorCallback(response){
         console.error('Erro ' + response);
     });
 } 
 
+//Cores randomicas nos graficos 
 randomCor = function(numCor){
     let hexadecimais = '0123456789ABCDEF';
     let corRandom = '#';
@@ -166,7 +169,7 @@ criaGrafico = function(acidente,tipoGrafico, options){
    $scope.gerarMapaBrasil = function(){
     limparGrafico()
     anychart.onDocumentReady(function() {
-        // criar mapa
+        // criar mapa do Brasil
         map = anychart.map();
 
         systemService.getUf().    
@@ -215,9 +218,10 @@ criaGrafico = function(acidente,tipoGrafico, options){
                 map.listen('pointClick', function(event) {
                     estadoSelect[0] = event.point.get('id')
                     estadoSelect[1] = event.point.get('nome')
-                    //limparGraficoEstados()
-                    gerarGraficosModal();
+                    $scope.limparGraficoEstados()
                     $('#modal1').modal('open');
+                    gerarGraficosModal();
+                    
                 })
 
                 // conjunto de dados geográficos
@@ -236,16 +240,14 @@ criaGrafico = function(acidente,tipoGrafico, options){
 
    gerarGraficosModal = function(){
         $scope.gerarSexoEstado();
-        $scope.gerarBrEstado();
-        $scope.gerarTop();
-        $scope.gerarfisico();
-   }
+    }
 
    // ESTADOS BRASIL GRÁFICOS MODAL
-   limparGraficoEstados = function(num){
-        if(myChartEstados != undefined){
-            myChartEstados.destroy();
+   $scope.limparGraficoEstados = function(num){
+        for(index in myChartEstadosVet){
+            myChartEstadosVet[index].destroy();
         }
+        myChartEstadosVet = [];
     }
 
     limparMapBrasil = function(){
@@ -263,7 +265,6 @@ criaGrafico = function(acidente,tipoGrafico, options){
         acidentesData.push(acidente[ac][1])
         numArray++;
     }
-        delete myChartEstados;
 
         myChartEstados = new Chart(ctxEst[num], {
             type: tipoGrafico,
@@ -276,6 +277,8 @@ criaGrafico = function(acidente,tipoGrafico, options){
             },
             options: options
           });
+
+          myChartEstadosVet.push(myChartEstados)
         
    };
     //Criando grafico de acidentes por sexo em determinado Estado
@@ -290,7 +293,7 @@ criaGrafico = function(acidente,tipoGrafico, options){
                 title: {
                    display: true,
                    fontSize: 28,
-                   text: 'Número de acidentes por sexo no estado: ' + estadoSelect[1]
+                   text: 'Número de acidentes por sexo no estado: ' + estadoSelect[1] //titulo da pagina adicionando o estado selecionado pelo usuario
                },
                legend: {
                    display: true,
@@ -300,7 +303,9 @@ criaGrafico = function(acidente,tipoGrafico, options){
                responsive: true
            }
             
-            criaGraficoEstados(response.data,"pie",option, 0)
+            
+            criaGraficoEstados(response.data,"pie",option, 0) //tipo de grafico, neste caso foi criado o grafico de pizza
+            $scope.gerarBrEstado();
     },
     function errorCallback(response){
         console.error('Erro ' + response);
@@ -308,7 +313,6 @@ criaGrafico = function(acidente,tipoGrafico, options){
 }
 //Criando grafico de acidentes por BR em determinado Estado
 $scope.gerarBrEstado = function(){ 
-    //limparGraficoEstados()
     $scope.requisicaoEst = true;
     systemService.getBrEstado(estadoSelect[0]).
     then(function successCalback(response){
@@ -318,7 +322,7 @@ $scope.gerarBrEstado = function(){
                 title: {
                    display: true,
                    fontSize: 28,
-                   text: 'Número de acidentes por BR no estado: ' + estadoSelect[1]
+                   text: 'Número de acidentes por BR no estado: ' + estadoSelect[1]  //titulo da pagina adicionando o estado selecionado pelo usuario
                },
                legend: {
                    display: true,
@@ -327,7 +331,8 @@ $scope.gerarBrEstado = function(){
                },
                responsive: true
            }
-            criaGraficoEstados(response.data,"pie",option, 1)
+            criaGraficoEstados(response.data,"pie",option, 1) //tipo de grafico, neste caso foi criado o grafico de pizza
+            $scope.gerarTop();
     },
     function errorCallback(response){
         console.error('Erro ' + response);
@@ -335,7 +340,6 @@ $scope.gerarBrEstado = function(){
 }
 //Criando grafico de acidentes Top 5 de cada Estado
 $scope.gerarTop = function(){ 
-    //limparGraficoEstados()
     $scope.requisicaoEst = true;
     systemService.getTop(estadoSelect[0]).
     then(function successCalback(response){
@@ -356,6 +360,7 @@ $scope.gerarTop = function(){
            }
             
             criaGraficoEstados(response.data,"pie",option, 2)
+            $scope.gerarfisico();
     },
     function errorCallback(response){
         console.error('Erro ' + response);
@@ -363,7 +368,6 @@ $scope.gerarTop = function(){
 }
 //Criando grafico de acidentes por Estado Fisico em determinado Estado
 $scope.gerarfisico = function(){ 
-    //limparGraficoEstados()
     $scope.requisicaoEst = true;
     systemService.getfisico(estadoSelect[0]).
     then(function successCalback(response){
@@ -373,7 +377,7 @@ $scope.gerarfisico = function(){
                 title: {
                    display: true,
                    fontSize: 28,
-                   text: 'Estado físico dos individuos acidentados no estado: ' + estadoSelect[1]
+                   text: 'Estado físico dos individuos acidentados no estado: ' + estadoSelect[1]  //titulo da pagina adicionando o estado selecionado pelo usuario
                },
                legend: {
                    display: true,
@@ -383,7 +387,7 @@ $scope.gerarfisico = function(){
                responsive: true
            }
             
-            criaGraficoEstados(response.data,"pie",option, 3)
+            criaGraficoEstados(response.data,"pie",option, 3) //tipo de grafico, neste caso foi criado o grafico de pizza
     },
     function errorCallback(response){
         console.error('Erro ' + response);
