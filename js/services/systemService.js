@@ -1,3 +1,4 @@
+//link das consultas trazidas do servidor para a pagina WEB
 app.factory("systemService", function($http){
     
     var _getUf = function() {
@@ -37,6 +38,7 @@ app.factory("systemService", function($http){
     return $http.get('http://127.0.0.1:5000/api/fisico/'+ estado);
 };
     
+//captura dos dados vindos do servidor Python   
 return {
   getdia: _getdia,
   getUf: _getUf,
