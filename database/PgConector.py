@@ -1,3 +1,5 @@
+#Conexao com o Banco de Dados PostgreSQL
+
 import psycopg2
 from model.Acidente import Acidente
 
